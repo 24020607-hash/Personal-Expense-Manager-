@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.expensemanager.controller.DashboardController"
+            stylesheets="@styles.css">
+
+    <!-- ===== SIDEBAR: điều hướng theo nhóm chức năng ===== -->
+    <left>
+        <VBox styleClass="sidebar" spacing="6">
+
+            <Label text="Expense Manager" styleClass="sidebar-title"/>
+            <Label text="Quản lý chi tiêu cá nhân" styleClass="sidebar-subtitle"/>
+
+            <Label text="GIAO DỊCH" styleClass="sidebar-section-label"/>
+            <Button text="＋ Thêm giao dịch" styleClass="sidebar-btn-primary" onAction="#handleAddTransaction"/>
+            <Button text="Sửa giao dịch đã chọn" styleClass="sidebar-btn" onAction="#handleEditTransaction"/>
+            <Button text="Xóa giao dịch đã chọn" styleClass="sidebar-btn" onAction="#handleDeleteTransaction"/>
+            <Button text="Tìm kiếm" styleClass="sidebar-btn" onAction="#handleFindTransaction"/>
+            <Button text="Hiện tất cả" styleClass="sidebar-btn" onAction="#handleShowAll"/>
+
+            <Label text="QUẢN LÝ" styleClass="sidebar-section-label"/>
+            <Button text="Ví / Tài khoản" styleClass="sidebar-btn" onAction="#handleManageWallets"/>
+            <Button text="Danh mục" styleClass="sidebar-btn" onAction="#handleManageCategories"/>
+            <Button text="Ngân sách" styleClass="sidebar-btn" onAction="#handleManageBudget"/>
+
+            <Label text="BÁO CÁO" styleClass="sidebar-section-label"/>
+            <Button text="Thống kê chi tiêu" styleClass="sidebar-btn" onAction="#handleShowStatistics"/>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+        </VBox>
+    </left>
+
+    <!-- ===== TOP: tiêu đề + 3 thẻ tổng quan ===== -->
+    <top>
+        <VBox styleClass="top-bar" spacing="14">
+
+            <Label text="Tổng quan tháng này" styleClass="page-title"/>
+
+            <HBox spacing="14">
+
+                <VBox styleClass="summary-card" HBox.hgrow="ALWAYS">
+                    <Label text="TỔNG THU NHẬP" styleClass="summary-card-label"/>
+                    <Label fx:id="lblIncome" text="0 đ" styleClass="summary-card-value, value-income"/>
+                </VBox>
+
+                <VBox styleClass="summary-card" HBox.hgrow="ALWAYS">
+                    <Label text="TỔNG CHI TIÊU" styleClass="summary-card-label"/>
+                    <Label fx:id="lblExpense" text="0 đ" styleClass="summary-card-value, value-expense"/>
+                </VBox>
+
+                <VBox styleClass="summary-card" HBox.hgrow="ALWAYS">
+                    <Label text="SỐ DƯ" styleClass="summary-card-label"/>
+                    <Label fx:id="lblBalance" text="0 đ" styleClass="summary-card-value, value-balance"/>
+                </VBox>
+
+            </HBox>
+
+        </VBox>
+    </top>
+
+    <!-- ===== CENTER: bảng giao dịch ===== -->
+    <center>
+        <TableView fx:id="tblTransactions" styleClass="table-view">
+            <columns>
+                <TableColumn fx:id="colDate" text="Ngày" prefWidth="100"/>
+                <TableColumn fx:id="colType" text="Loại" prefWidth="90"/>
+                <TableColumn fx:id="colCategory" text="Danh mục" prefWidth="140"/>
+                <TableColumn fx:id="colAmount" text="Số tiền" prefWidth="130"/>
+                <TableColumn fx:id="colWallet" text="Ví" prefWidth="120"/>
+                <TableColumn fx:id="colNote" text="Ghi chú" prefWidth="260"/>
+            </columns>
+        </TableView>
+    </center>
+
+</BorderPane>

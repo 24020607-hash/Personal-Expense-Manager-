@@ -1,0 +1,106 @@
+@startuml PersonalExpenseManager
+
+abstract class Transaction {
+  -int id
+  -double amount
+  -LocalDate date
+  -String note
+  -Category category
+  -Wallet wallet
+  +getType(): TransactionType
+  +getSignedAmount(): double
+  +printInfo(): void
+}
+
+class Income {
+  -String source
+}
+
+class Expense {
+  -String paymentMethod
+}
+
+class RecurringExpense {
+  -Period period
+  +nextDueDate(): LocalDate
+}
+
+abstract class Wallet {
+  -String name
+  -double balance
+  +deposit(amount: double): void
+  +withdraw(amount: double): void
+  +getWalletType(): WalletType
+}
+
+class CashWallet
+class BankAccount {
+  -String bankName
+  -String accountNumber
+}
+class EWallet {
+  -String provider
+}
+
+interface Storage {
+  +save(transactions: List<Transaction>, path: String): void
+  +load(path: String, wallets, categories): List<Transaction>
+}
+
+class CsvStorage
+class JsonStorage
+
+class Category {
+  -String name
+  -TransactionType type
+}
+
+class Budget {
+  -Category category
+  -double limit
+  -Period period
+  +isExceeded(spent: double): boolean
+}
+
+class ExpenseManager <<Singleton>> {
+  -List<Transaction> transactions
+  -List<Wallet> wallets
+  -List<Category> categories
+  -Map<Category, Budget> budgets
+  -Storage storage
+  +getInstance(): ExpenseManager
+  +addTransaction(t: Transaction): void
+  +removeTransaction(id: int): boolean
+  +updateTransaction(...): void
+  +findTransactions(...): List<Transaction>
+  +statisticsByCategory(month): Map<Category, Double>
+}
+
+class ConsoleView
+class DashboardController
+
+Transaction <|-- Income
+Transaction <|-- Expense
+Expense <|-- RecurringExpense
+
+Wallet <|-- CashWallet
+Wallet <|-- BankAccount
+Wallet <|-- EWallet
+
+Storage <|.. CsvStorage
+Storage <|.. JsonStorage
+
+ExpenseManager "1" o-- "*" Transaction
+ExpenseManager "1" o-- "*" Wallet
+ExpenseManager "1" o-- "*" Category
+ExpenseManager "1" o-- "*" Budget
+ExpenseManager --> Storage : uses
+
+Transaction --> Category
+Transaction --> Wallet
+Budget --> Category
+
+ConsoleView --> ExpenseManager : uses
+DashboardController --> ExpenseManager : uses
+
+@enduml

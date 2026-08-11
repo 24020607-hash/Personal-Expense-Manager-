@@ -1,0 +1,203 @@
+/*
+ * Bang mau (deliberate, chu de "so tay tai chinh ca nhan"):
+ *  - Nen trung tinh am:      #F6F4EF
+ *  - Sidebar (mau chinh):    #26414F  (xanh than-teal dam, thay cho mac dinh)
+ *  - Accent tren sidebar:    #5FA8A0  (teal sang)
+ *  - Thu nhap (xanh la):     #2E8B57
+ *  - Chi tieu (coral):       #D96C5F
+ *  - Text chinh:             #23272F
+ *  - Text phu:                #6B7280
+ *  - Vien:                    #E3E0D6
+ */
+
+.root {
+    -fx-font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+    -fx-background-color: #F6F4EF;
+    -fx-font-size: 13px;
+}
+
+/* ============ SIDEBAR ============ */
+
+.sidebar {
+    -fx-background-color: #26414F;
+    -fx-padding: 24 16 24 16;
+    -fx-pref-width: 220;
+    -fx-min-width: 220;
+}
+
+.sidebar-title {
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+.sidebar-subtitle {
+    -fx-text-fill: #9FC4C0;
+    -fx-font-size: 11px;
+}
+
+.sidebar-section-label {
+    -fx-text-fill: #5FA8A0;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-padding: 18 0 4 4;
+}
+
+.sidebar-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #E6EEF0;
+    -fx-font-size: 13px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 9 10 9 10;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+    -fx-max-width: Infinity;
+}
+
+.sidebar-btn:hover {
+    -fx-background-color: #32536424;
+    -fx-background-color: #345C6B;
+}
+
+.sidebar-btn-primary {
+    -fx-background-color: #5FA8A0;
+    -fx-text-fill: #143028;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 9 10 9 10;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+    -fx-max-width: Infinity;
+}
+
+.sidebar-btn-primary:hover {
+    -fx-background-color: #74B8B0;
+}
+
+/* ============ TOP BAR / SUMMARY CARDS ============ */
+
+.top-bar {
+    -fx-padding: 20 24 12 24;
+}
+
+.page-title {
+    -fx-text-fill: #23272F;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+.summary-card {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 10;
+    -fx-border-color: #E3E0D6;
+    -fx-border-radius: 10;
+    -fx-border-width: 1;
+    -fx-padding: 14 20 14 20;
+    -fx-spacing: 4;
+}
+
+.summary-card-label {
+    -fx-text-fill: #6B7280;
+    -fx-font-size: 11px;
+}
+
+.summary-card-value {
+    -fx-font-size: 19px;
+    -fx-font-weight: bold;
+}
+
+.value-income {
+    -fx-text-fill: #2E8B57;
+}
+
+.value-expense {
+    -fx-text-fill: #D96C5F;
+}
+
+.value-balance {
+    -fx-text-fill: #23272F;
+}
+
+/* ============ TABLE ============ */
+
+.table-view {
+    -fx-background-color: transparent;
+    -fx-padding: 0 24 0 24;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 8 8 0 0;
+}
+
+.table-view .column-header, .table-view .filler {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent #E3E0D6 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: #6B7280;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.table-row-cell {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: transparent transparent #F0EEE6 transparent;
+    -fx-table-cell-border-color: transparent;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #FBFAF7;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #E6F1EF;
+}
+
+.table-row-cell:selected .text {
+    -fx-fill: #23272F;
+}
+
+.table-view .cell {
+    -fx-text-fill: #23272F;
+    -fx-padding: 8 10 8 10;
+}
+
+/* ============ BOTTOM ACTION BAR (Sua/Xoa/Tim kiem theo dong dang chon) ============ */
+
+.action-bar {
+    -fx-padding: 12 24 20 24;
+    -fx-spacing: 8;
+    -fx-alignment: CENTER_RIGHT;
+}
+
+.btn-secondary {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #D6D2C4;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-text-fill: #23272F;
+    -fx-padding: 7 16 7 16;
+    -fx-cursor: hand;
+}
+
+.btn-secondary:hover {
+    -fx-background-color: #F0EEE6;
+}
+
+.btn-danger {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #D96C5F;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-text-fill: #D96C5F;
+    -fx-padding: 7 16 7 16;
+    -fx-cursor: hand;
+}
+
+.btn-danger:hover {
+    -fx-background-color: #FCEDEA;
+}
