@@ -2,10 +2,21 @@ package com.expensemanager.model;
 
 import com.expensemanager.enums.WalletType;
 
+/**
+ * Ví điện tử (VD: Momo, ZaloPay...). Rút tiền không tính phí giao dịch,
+ * tương tự CashWallet nhưng khác loại (getWalletType()).
+ */
 public class EWallet extends Wallet {
 
     private String provider;
 
+    /**
+     * Khởi tạo ví điện tử.
+     *
+     * @param name     tên ví hiển thị
+     * @param balance  số dư ban đầu
+     * @param provider nhà cung cấp (VD: Momo, ZaloPay)
+     */
     public EWallet(String name,
                    double balance,
                    String provider) {

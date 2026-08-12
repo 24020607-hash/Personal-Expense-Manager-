@@ -15,6 +15,17 @@ public class WalletFactory {
     private WalletFactory() {
     }
 
+    /**
+     * Tạo một ví theo loại tương ứng.
+     *
+     * @param type       loại ví (CASH/BANK/EWALLET)
+     * @param name       tên ví
+     * @param balance    số dư ban đầu
+     * @param extraInfo1 thông tin thêm 1 (provider với EWALLET, bankName với BANK)
+     * @param extraInfo2 thông tin thêm 2 (accountNumber, chỉ dùng cho BANK)
+     * @return đối tượng Wallet tương ứng với loại được chọn
+     * @throws IllegalArgumentException nếu type không hợp lệ
+     */
     public static Wallet create(WalletType type,
                                  String name,
                                  double balance,

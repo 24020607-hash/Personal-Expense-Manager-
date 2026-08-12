@@ -53,6 +53,9 @@ public class DashboardController {
         refreshSummary();
     }
 
+    /**
+     * Gán cách lấy dữ liệu hiển thị cho từng cột của bảng giao dịch.
+     */
     private void setupTableColumns() {
         colId.setCellValueFactory(data ->
                 new javafx.beans.property.SimpleStringProperty(String.valueOf(data.getValue().getId())));
@@ -69,11 +72,19 @@ public class DashboardController {
         colNote.setCellValueFactory(new PropertyValueFactory<>("note"));
     }
 
+    /**
+     * Cập nhật danh sách hiển thị trên bảng.
+     *
+     * @param list danh sách giao dịch cần hiển thị
+     */
     private void refreshTable(List<Transaction> list) {
         ObservableList<Transaction> data = FXCollections.observableArrayList(list);
         tblTransactions.setItems(data);
     }
 
+    /**
+     * Cập nhật 3 thẻ tổng quan (thu nhập/chi tiêu/số dư) của tháng hiện tại.
+     */
     private void refreshSummary() {
         YearMonth now = YearMonth.now();
         double income = manager.getMonthlyIncome(now);
@@ -85,6 +96,9 @@ public class DashboardController {
         lblBalance.setText("Số dư: " + CurrencyFormatUtil.format(balance));
     }
 
+    /**
+     * Hiển thị lại toàn bộ giao dịch (bỏ bộ lọc tìm kiếm nếu có).
+     */
     @FXML
     private void handleShowAll() {
         refreshTable(manager.getTransactions());
@@ -92,11 +106,17 @@ public class DashboardController {
 
     // ================== THÊM / SỬA GIAO DỊCH (dùng chung 1 form) ==================
 
+    /**
+     * Mở form thêm giao dịch mới.
+     */
     @FXML
     private void handleAddTransaction() {
         openTransactionForm(null);
     }
 
+    /**
+     * Mở form sửa giao dịch đang được chọn trên bảng.
+     */
     @FXML
     private void handleEditTransaction() {
         Transaction selected = tblTransactions.getSelectionModel().getSelectedItem();
@@ -107,6 +127,11 @@ public class DashboardController {
         openTransactionForm(selected);
     }
 
+    /**
+     * Mở dialog dùng chung cho cả Thêm và Sửa giao dịch.
+     *
+     * @param editing giao dịch cần sửa, hoặc null nếu đang thêm mới
+     */
     private void openTransactionForm(Transaction editing) {
 
         if (manager.getWallets().isEmpty()) {
@@ -215,6 +240,9 @@ public class DashboardController {
         refreshSummary();
     }
 
+    /**
+     * Xóa giao dịch đang được chọn trên bảng, sau khi xác nhận.
+     */
     @FXML
     private void handleDeleteTransaction() {
         Transaction selected = tblTransactions.getSelectionModel().getSelectedItem();
@@ -236,6 +264,9 @@ public class DashboardController {
 
     // ================== TÌM KIẾM ==================
 
+    /**
+     * Mở dialog tìm kiếm giao dịch theo danh mục/khoảng ngày/số tiền.
+     */
     @FXML
     private void handleFindTransaction() {
 
@@ -296,6 +327,9 @@ public class DashboardController {
 
     // ================== QUẢN LÝ VÍ ==================
 
+    /**
+     * Mở dialog quản lý ví: xem danh sách, xóa, hoặc thêm ví mới.
+     */
     @FXML
     private void handleManageWallets() {
 
@@ -408,6 +442,9 @@ public class DashboardController {
 
     // ================== QUẢN LÝ DANH MỤC ==================
 
+    /**
+     * Mở dialog quản lý danh mục: xem danh sách, xóa, hoặc thêm danh mục mới.
+     */
     @FXML
     private void handleManageCategories() {
 
@@ -487,6 +524,9 @@ public class DashboardController {
 
     // ================== NGÂN SÁCH ==================
 
+    /**
+     * Mở dialog đặt hạn mức ngân sách theo danh mục và xem tình trạng vượt hạn mức.
+     */
     @FXML
     private void handleManageBudget() {
 
@@ -539,6 +579,11 @@ public class DashboardController {
         dialog.showAndWait();
     }
 
+    /**
+     * Vẽ lại danh sách trạng thái ngân sách (đã chi / hạn mức / có vượt hay không).
+     *
+     * @param statusBox khung chứa các dòng trạng thái, sẽ bị xóa và vẽ lại từ đầu
+     */
     private void rebuildBudgetStatus(VBox statusBox) {
         statusBox.getChildren().clear();
         YearMonth now = YearMonth.now();
@@ -566,6 +611,10 @@ public class DashboardController {
 
     // ================== THỐNG KÊ ==================
 
+    /**
+     * Hiển thị thống kê chi tiêu tháng hiện tại: theo danh mục, khoản chi lớn
+     * nhất/nhỏ nhất, danh mục tốn kém nhất.
+     */
     @FXML
     private void handleShowStatistics() {
 
@@ -608,15 +657,30 @@ public class DashboardController {
 
     // ================== TIỆN ÍCH ==================
 
+    /**
+     * Áp style CSS chung của ứng dụng cho một dialog để giao diện đồng bộ.
+     *
+     * @param dialog dialog cần áp style
+     */
     private void applyStylesheet(Dialog<?> dialog) {
         dialog.getDialogPane().getStylesheets().add(
                 getClass().getResource("/com/expensemanager/view/styles.css").toExternalForm());
     }
 
+    /**
+     * Hiển thị hộp thoại cảnh báo.
+     *
+     * @param message nội dung cảnh báo
+     */
     private void showWarning(String message) {
         new Alert(Alert.AlertType.WARNING, message).showAndWait();
     }
 
+    /**
+     * Hiển thị hộp thoại thông báo.
+     *
+     * @param message nội dung thông báo
+     */
     private void showInfo(String message) {
         new Alert(Alert.AlertType.INFORMATION, message).showAndWait();
     }

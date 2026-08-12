@@ -23,6 +23,12 @@ public class Main extends Application {
 
     private static boolean consoleMode = false;
 
+    /**
+     * Khởi tạo và hiển thị giao diện đồ họa (được JavaFX gọi tự động).
+     *
+     * @param stage cửa sổ chính của ứng dụng
+     * @throws Exception nếu không load được FXML
+     */
     @Override
     public void start(Stage stage) throws Exception {
 
@@ -55,6 +61,12 @@ public class Main extends Application {
         stage.show();
     }
 
+    /**
+     * Điểm vào chương trình. Kiểm tra tham số dòng lệnh để quyết định chạy
+     * GUI (mặc định) hay Console (khi truyền "console").
+     *
+     * @param args tham số dòng lệnh
+     */
     public static void main(String[] args) {
 
         if (args.length > 0 && args[0].equalsIgnoreCase("console")) {
@@ -65,6 +77,10 @@ public class Main extends Application {
         launch(args);
     }
 
+    /**
+     * Nạp dữ liệu, chạy giao diện dòng lệnh cho đến khi người dùng thoát,
+     * sau đó lưu lại dữ liệu.
+     */
     private static void runConsole() {
 
         Storage storage = new CsvStorage();

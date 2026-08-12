@@ -12,6 +12,10 @@ public class CurrencyFormatUtil {
     private CurrencyFormatUtil() {
     }
 
+    /**
+     * @param amount số tiền cần định dạng
+     * @return chuỗi đã định dạng, VD: "1,000,000 đ"
+     */
     public static String format(double amount) {
         return FORMAT.format(amount) + " đ";
     }

@@ -5,6 +5,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Kiểm thử cho Wallet và các lớp con: deposit/withdraw, tính đóng gói
+ * (không cho số dư âm), và tính đa hình của withdraw() giữa các loại ví.
+ */
 class WalletTest {
 
     private Wallet cashWallet;

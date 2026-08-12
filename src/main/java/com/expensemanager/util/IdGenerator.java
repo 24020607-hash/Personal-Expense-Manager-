@@ -16,17 +16,27 @@ public class IdGenerator {
     private IdGenerator() {
     }
 
-    /** Khởi tạo bộ đếm dựa trên ID lớn nhất đang có trong danh sách giao dịch đã load. */
+    /**
+     * Khởi tạo bộ đếm dựa trên ID lớn nhất đang có trong danh sách giao dịch đã load.
+     *
+     * @param transactions danh sách giao dịch vừa đọc từ file
+     */
     public static void initFrom(List<Transaction> transactions) {
+
         int maxId = 0;
+
         for (Transaction t : transactions) {
             if (t.getId() > maxId) {
                 maxId = t.getId();
             }
         }
+
         counter.set(maxId);
     }
 
+    /**
+     * @return ID mới, duy nhất, tăng dần
+     */
     public static int nextId() {
         return counter.incrementAndGet();
     }

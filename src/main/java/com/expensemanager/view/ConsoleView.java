@@ -18,11 +18,20 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Scanner;
 
+/**
+ * Giao diện dòng lệnh (Console) - tầng hiển thị, tách biệt khỏi tầng nghiệp vụ.
+ * Toàn bộ thao tác đều gọi qua ExpenseManager (Singleton), không xử lý logic
+ * trực tiếp ở đây. Cài đặt đúng menu [0]-[9] theo yêu cầu đề bài.
+ */
 public class ConsoleView {
 
     private final ExpenseManager manager = ExpenseManager.getInstance();
     private final Scanner scanner = new Scanner(System.in);
 
+    /**
+     * Vòng lặp chính của giao diện dòng lệnh: hiển thị menu và xử lý lựa chọn
+     * của người dùng cho đến khi chọn thoát (0).
+     */
     public void run() {
 
         System.out.println("Welcome to My Expense Manager!");
@@ -53,6 +62,9 @@ public class ConsoleView {
         System.out.println("Bye!");
     }
 
+    /**
+     * In menu các lựa chọn ra console.
+     */
     private void printMenu() {
         System.out.println("\n[0] Exit");
         System.out.println("[1] Add Transaction");
@@ -67,6 +79,9 @@ public class ConsoleView {
         System.out.print("Choose an action: ");
     }
 
+    /**
+     * Xử lý lựa chọn [1] Add Transaction.
+     */
     private void addTransaction() {
 
         if (manager.getWallets().isEmpty()) {
@@ -105,12 +120,18 @@ public class ConsoleView {
         }
     }
 
+    /**
+     * Xử lý lựa chọn [2] Remove Transaction.
+     */
     private void removeTransaction() {
         int id = readInt("Nhap ID giao dich can xoa: ");
         boolean removed = manager.removeTransaction(id);
         System.out.println(removed ? "Da xoa giao dich." : "Khong tim thay giao dich co ID = " + id);
     }
 
+    /**
+     * Xử lý lựa chọn [3] Update Transaction.
+     */
     private void updateTransaction() {
 
         int id = readInt("Nhap ID giao dich can sua: ");
@@ -142,6 +163,9 @@ public class ConsoleView {
         }
     }
 
+    /**
+     * Xử lý lựa chọn [4] Find Transaction.
+     */
     private void findTransaction() {
 
         System.out.println("Tim theo: [1] Danh muc  [2] Khoang ngay  [3] So tien chinh xac  [4] Bo qua, hien het");
@@ -170,10 +194,18 @@ public class ConsoleView {
         printTransactionTable(results);
     }
 
+    /**
+     * Xử lý lựa chọn [5] Display All Transactions.
+     */
     private void displayAllTransactions() {
         printTransactionTable(manager.getTransactions());
     }
 
+    /**
+     * In danh sách giao dịch ra console dưới dạng bảng.
+     *
+     * @param list danh sách giao dịch cần in
+     */
     private void printTransactionTable(List<Transaction> list) {
 
         if (list.isEmpty()) {
@@ -196,6 +228,9 @@ public class ConsoleView {
         }
     }
 
+    /**
+     * Xử lý lựa chọn [6] Manage Category.
+     */
     private void manageCategory() {
 
         System.out.println("[1] Them danh muc  [2] Xoa danh muc  [3] Danh sach danh muc");
@@ -238,6 +273,9 @@ public class ConsoleView {
         }
     }
 
+    /**
+     * Xử lý lựa chọn [7] Manage Wallet.
+     */
     private void manageWallet() {
 
         System.out.println("[1] Them vi  [2] Xem so du tung vi");
@@ -284,6 +322,9 @@ public class ConsoleView {
         }
     }
 
+    /**
+     * Xử lý lựa chọn [8] Monthly Summary.
+     */
     private void monthlySummary() {
 
         YearMonth month = readYearMonth();
@@ -315,6 +356,9 @@ public class ConsoleView {
                         + " (" + CurrencyFormatUtil.format(entry.getValue()) + ")"));
     }
 
+    /**
+     * Xử lý lựa chọn [9] Set / Check Budget.
+     */
     private void setOrCheckBudget() {
 
         System.out.println("[1] Dat han muc  [2] Kiem tra vuot han muc");
@@ -354,6 +398,11 @@ public class ConsoleView {
         }
     }
 
+    /**
+     * Hiện danh sách danh mục để người dùng chọn theo số thứ tự.
+     *
+     * @return danh mục được chọn, hoặc null nếu không hợp lệ/chưa có danh mục nào
+     */
     private Category chooseCategory() {
         if (manager.getCategories().isEmpty()) {
             System.out.println("Chua co danh muc nao.");
@@ -372,6 +421,11 @@ public class ConsoleView {
         return categories.get(index);
     }
 
+    /**
+     * Hiện danh sách ví để người dùng chọn theo số thứ tự.
+     *
+     * @return ví được chọn, hoặc null nếu không hợp lệ/chưa có ví nào
+     */
     private Wallet chooseWallet() {
         if (manager.getWallets().isEmpty()) {
             System.out.println("Chua co vi nao.");
@@ -390,6 +444,12 @@ public class ConsoleView {
         return wallets.get(index);
     }
 
+    /**
+     * Đọc một số nguyên từ bàn phím.
+     *
+     * @param prompt thông báo hiển thị trước khi nhập
+     * @return số nguyên đã nhập, hoặc -1 nếu nhập sai định dạng
+     */
     private int readInt(String prompt) {
         System.out.print(prompt);
         try {
@@ -399,6 +459,12 @@ public class ConsoleView {
         }
     }
 
+    /**
+     * Đọc một số thực dương từ bàn phím, lặp lại đến khi hợp lệ.
+     *
+     * @param prompt thông báo hiển thị trước khi nhập
+     * @return số thực dương đã nhập
+     */
     private double readPositiveDouble(String prompt) {
         while (true) {
             System.out.print(prompt);
@@ -415,6 +481,12 @@ public class ConsoleView {
         }
     }
 
+    /**
+     * Đọc một số thực không âm từ bàn phím (dùng cho số dư ban đầu, cho phép 0).
+     *
+     * @param prompt thông báo hiển thị trước khi nhập
+     * @return số thực không âm đã nhập, hoặc 0 nếu nhập sai định dạng
+     */
     private double readPositiveOrZeroDouble(String prompt) {
         System.out.print(prompt);
         try {
@@ -425,6 +497,12 @@ public class ConsoleView {
         }
     }
 
+    /**
+     * Đọc một ngày (yyyy-MM-dd) từ bàn phím, lặp lại đến khi đúng định dạng.
+     *
+     * @param prompt thông báo hiển thị trước khi nhập
+     * @return ngày đã nhập
+     */
     private LocalDate readDate(String prompt) {
         while (true) {
             System.out.print(prompt);
@@ -437,6 +515,11 @@ public class ConsoleView {
         }
     }
 
+    /**
+     * Đọc một tháng (yyyy-MM) từ bàn phím; Enter để lấy tháng hiện tại.
+     *
+     * @return tháng đã nhập, hoặc tháng hiện tại nếu để trống
+     */
     private YearMonth readYearMonth() {
         while (true) {
             System.out.print("Thang can xem (yyyy-MM), Enter de lay thang hien tai: ");

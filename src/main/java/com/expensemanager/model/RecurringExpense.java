@@ -4,10 +4,26 @@ import com.expensemanager.enums.Period;
 
 import java.time.LocalDate;
 
+/**
+ * Giao dịch chi tiêu định kỳ (VD: tiền nhà, tiền internet lặp lại hằng tháng).
+ * Kế thừa Expense - minh họa cây kế thừa 3 tầng: Transaction -> Expense -> RecurringExpense.
+ */
 public class RecurringExpense extends Expense {
 
     private Period period;
 
+    /**
+     * Khởi tạo một giao dịch chi tiêu định kỳ.
+     *
+     * @param id            mã định danh giao dịch
+     * @param amount        số tiền
+     * @param date          ngày phát sinh (kỳ đầu tiên)
+     * @param note          ghi chú
+     * @param category      danh mục
+     * @param wallet        ví bị trừ tiền
+     * @param paymentMethod hình thức thanh toán
+     * @param period        chu kỳ lặp lại (ngày/tuần/tháng/năm)
+     */
     public RecurringExpense(int id,
                             double amount,
                             LocalDate date,
@@ -29,6 +45,11 @@ public class RecurringExpense extends Expense {
         this.period = period;
     }
 
+    /**
+     * Tính ngày đến hạn kế tiếp dựa trên chu kỳ lặp.
+     *
+     * @return ngày đến hạn tiếp theo
+     */
     public LocalDate nextDueDate() {
 
         switch (period) {

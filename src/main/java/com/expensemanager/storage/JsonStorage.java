@@ -22,6 +22,7 @@ public class JsonStorage implements Storage {
     public void save(List<Transaction> transactions, String path) throws IOException {
 
         Path filePath = Paths.get(path);
+
         if (filePath.getParent() != null) {
             Files.createDirectories(filePath.getParent());
         }
@@ -30,6 +31,7 @@ public class JsonStorage implements Storage {
         sb.append("[\n");
 
         for (int i = 0; i < transactions.size(); i++) {
+
             Transaction t = transactions.get(i);
 
             sb.append("  {")
@@ -45,6 +47,7 @@ public class JsonStorage implements Storage {
             if (i < transactions.size() - 1) {
                 sb.append(",");
             }
+
             sb.append("\n");
         }
 
@@ -78,7 +81,9 @@ public class JsonStorage implements Storage {
         String[] rawObjects = content.split("\\},\\s*\\{");
 
         for (String raw : rawObjects) {
+
             String obj = raw.replace("{", "").replace("}", "").trim();
+
             if (obj.isEmpty()) continue;
 
             String[] fields = obj.split(",(?=\"\\w+\":)");
@@ -92,6 +97,7 @@ public class JsonStorage implements Storage {
             String walletName = "";
 
             for (String field : fields) {
+
                 String[] kv = field.split(":", 2);
                 String key = kv[0].replace("\"", "").trim();
                 String value = kv[1].trim().replaceAll("^\"|\"$", "");
@@ -120,24 +126,49 @@ public class JsonStorage implements Storage {
         return transactions;
     }
 
+    /**
+     * Tìm Category đã tồn tại theo tên; nếu chưa có, tạo mới và thêm vào danh sách.
+     *
+     * @param categories danh sách danh mục hiện có
+     * @param name       tên danh mục cần tìm
+     * @param type       loại danh mục (dùng khi phải tạo mới)
+     * @return danh mục đã tìm thấy hoặc vừa được tạo mới
+     */
     private Category findOrCreateCategory(List<Category> categories, String name, TransactionType type) {
+
         for (Category c : categories) {
             if (c.getName().equals(name)) return c;
         }
+
         Category newCategory = new Category(name, type);
         categories.add(newCategory);
         return newCategory;
     }
 
+    /**
+     * Tìm Wallet đã tồn tại theo tên; nếu chưa có, tạo mới (số dư 0) và thêm vào danh sách.
+     *
+     * @param wallets danh sách ví hiện có
+     * @param name    tên ví cần tìm
+     * @return ví đã tìm thấy hoặc vừa được tạo mới
+     */
     private Wallet findOrCreateWallet(List<Wallet> wallets, String name) {
+
         for (Wallet w : wallets) {
             if (w.getName().equals(name)) return w;
         }
+
         Wallet newWallet = new CashWallet(name, 0);
         wallets.add(newWallet);
         return newWallet;
     }
 
+    /**
+     * Thay dấu ngoặc kép trong chuỗi để không làm vỡ cấu trúc JSON.
+     *
+     * @param value chuỗi cần xử lý, có thể null
+     * @return chuỗi an toàn để ghi vào JSON
+     */
     private String escape(String value) {
         return value == null ? "" : value.replace("\"", "'");
     }

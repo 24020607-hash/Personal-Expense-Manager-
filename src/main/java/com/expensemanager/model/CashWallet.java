@@ -2,8 +2,17 @@ package com.expensemanager.model;
 
 import com.expensemanager.enums.WalletType;
 
+/**
+ * Ví tiền mặt. Rút tiền không tính phí giao dịch.
+ */
 public class CashWallet extends Wallet {
 
+    /**
+     * Khởi tạo ví tiền mặt.
+     *
+     * @param name    tên ví
+     * @param balance số dư ban đầu
+     */
     public CashWallet(String name, double balance) {
         super(name, balance);
     }

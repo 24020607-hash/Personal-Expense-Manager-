@@ -8,6 +8,10 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Kiểm thử cho Category: đảm bảo equals()/hashCode() hoạt động đúng khi
+ * dùng Category làm key trong Map (quan trọng cho tính năng Budget).
+ */
 class CategoryTest {
 
     @Test

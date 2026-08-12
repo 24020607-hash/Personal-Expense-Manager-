@@ -2,11 +2,23 @@ package com.expensemanager.model;
 
 import com.expensemanager.enums.WalletType;
 
+/**
+ * Tài khoản ngân hàng. Khác với CashWallet: rút tiền bị tính thêm phí giao
+ * dịch cố định (minh họa tính đa hình của withdraw()).
+ */
 public class BankAccount extends Wallet {
 
     private String bankName;
     private String accountNumber;
 
+    /**
+     * Khởi tạo tài khoản ngân hàng.
+     *
+     * @param name          tên ví hiển thị
+     * @param balance       số dư ban đầu
+     * @param bankName      tên ngân hàng
+     * @param accountNumber số tài khoản
+     */
     public BankAccount(String name,
                        double balance,
                        String bankName,

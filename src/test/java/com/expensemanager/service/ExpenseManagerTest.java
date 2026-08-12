@@ -16,6 +16,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Kiểm thử tích hợp cho ExpenseManager: xác nhận giao dịch cập nhật đúng số
+ * dư ví (cộng/trừ), rollback khi cập nhật thất bại, và các hàm thống kê/tìm kiếm.
+ */
 class ExpenseManagerTest {
 
     private ExpenseManager manager;

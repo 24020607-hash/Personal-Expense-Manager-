@@ -8,6 +8,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Cài đặt Storage bằng định dạng CSV.
+ */
 public class CsvStorage implements Storage {
 
     @Override
@@ -16,6 +19,7 @@ public class CsvStorage implements Storage {
 
         File file = new File(path);
         File parent = file.getParentFile();
+
         if (parent != null && !parent.exists()) {
             parent.mkdirs();
         }
@@ -103,29 +107,56 @@ public class CsvStorage implements Storage {
         return transactions;
     }
 
+    /**
+     * Tìm Category đã tồn tại theo tên; nếu chưa có, tạo mới và thêm vào danh sách.
+     *
+     * @param categories danh sách danh mục hiện có
+     * @param name       tên danh mục cần tìm
+     * @param type       loại danh mục (dùng khi phải tạo mới)
+     * @return danh mục đã tìm thấy hoặc vừa được tạo mới
+     */
     private Category findOrCreateCategory(List<Category> categories, String name, TransactionType type) {
+
         for (Category c : categories) {
             if (c.getName().equals(name)) {
                 return c;
             }
         }
+
         Category newCategory = new Category(name, type);
         categories.add(newCategory);
         return newCategory;
     }
 
+    /**
+     * Tìm Wallet đã tồn tại theo tên; nếu chưa có, tạo mới (số dư 0) và thêm
+     * vào danh sách. Việc tra cứu lại thay vì luôn tạo mới giúp không làm mất
+     * số dư ví hiện có khi nạp lại dữ liệu.
+     *
+     * @param wallets danh sách ví hiện có
+     * @param name    tên ví cần tìm
+     * @return ví đã tìm thấy hoặc vừa được tạo mới
+     */
     private Wallet findOrCreateWallet(List<Wallet> wallets, String name) {
+
         for (Wallet w : wallets) {
             if (w.getName().equals(name)) {
                 return w;
             }
         }
+
         // Chỉ tạo mới (balance = 0) nếu ví thực sự chưa tồn tại trong hệ thống
         Wallet newWallet = new CashWallet(name, 0);
         wallets.add(newWallet);
         return newWallet;
     }
 
+    /**
+     * Thay dấu phẩy trong chuỗi bằng khoảng trắng để tránh làm vỡ cấu trúc dòng CSV.
+     *
+     * @param value chuỗi cần xử lý, có thể null
+     * @return chuỗi an toàn để ghi vào CSV
+     */
     private String safe(String value) {
         return value == null ? "" : value.replace(",", " ");
     }

@@ -6,6 +6,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Kiểm thử cho Budget: kiểm tra vượt hạn mức và ràng buộc đóng gói (hạn mức phải dương).
+ */
 class BudgetTest {
 
     @Test

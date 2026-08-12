@@ -4,6 +4,11 @@ import com.expensemanager.enums.TransactionType;
 
 import java.time.LocalDate;
 
+/**
+ * Lớp trừu tượng đại diện cho một giao dịch thu/chi.
+ * Là lớp cha của Income, Expense, RecurringExpense (kế thừa + đa hình
+ * thông qua getType() và getSignedAmount()).
+ */
 public abstract class Transaction {
 
     private int id;
@@ -13,12 +18,22 @@ public abstract class Transaction {
     private Category category;
     private Wallet wallet;
 
+    /**
+     * Khởi tạo một giao dịch.
+     *
+     * @param id       mã định danh giao dịch
+     * @param amount   số tiền, phải lớn hơn 0
+     * @param date     ngày phát sinh giao dịch
+     * @param note     ghi chú
+     * @param category danh mục của giao dịch
+     * @param wallet   ví/tài khoản liên quan
+     */
     public Transaction(int id,
-                       double amount,
-                       LocalDate date,
-                       String note,
-                       Category category,
-                       Wallet wallet) {
+                        double amount,
+                        LocalDate date,
+                        String note,
+                        Category category,
+                        Wallet wallet) {
 
         this.id = id;
         setAmount(amount);
@@ -40,6 +55,12 @@ public abstract class Transaction {
         return amount;
     }
 
+    /**
+     * Gán số tiền cho giao dịch, có kiểm tra hợp lệ (đóng gói).
+     *
+     * @param amount số tiền mới, phải lớn hơn 0
+     * @throws IllegalArgumentException nếu amount không lớn hơn 0
+     */
     public void setAmount(double amount) {
 
         if (amount <= 0) {
@@ -81,10 +102,19 @@ public abstract class Transaction {
         this.wallet = wallet;
     }
 
+    /**
+     * @return loại giao dịch (Thu nhập/Chi tiêu), mỗi lớp con trả về giá trị khác nhau (đa hình)
+     */
     public abstract TransactionType getType();
 
+    /**
+     * @return số tiền có dấu: dương với Income, âm với Expense (đa hình)
+     */
     public abstract double getSignedAmount();
 
+    /**
+     * In thông tin tóm tắt của giao dịch ra console.
+     */
     public void printInfo() {
         System.out.println(
                 "ID: " + id
