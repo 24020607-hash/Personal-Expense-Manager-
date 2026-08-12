@@ -32,6 +32,7 @@ import java.util.Optional;
 public class DashboardController {
 
     @FXML private TableView<Transaction> tblTransactions;
+    @FXML private TableColumn<Transaction, String> colId;
     @FXML private TableColumn<Transaction, String> colDate;
     @FXML private TableColumn<Transaction, String> colType;
     @FXML private TableColumn<Transaction, String> colCategory;
@@ -53,6 +54,8 @@ public class DashboardController {
     }
 
     private void setupTableColumns() {
+        colId.setCellValueFactory(data ->
+                new javafx.beans.property.SimpleStringProperty(String.valueOf(data.getValue().getId())));
         colDate.setCellValueFactory(data ->
                 new javafx.beans.property.SimpleStringProperty(DateUtil.format(data.getValue().getDate())));
         colType.setCellValueFactory(data ->
@@ -170,6 +173,13 @@ public class DashboardController {
         Button okButton = (Button) dialog.getDialogPane().lookupButton(okButtonType);
         okButton.addEventFilter(javafx.event.ActionEvent.ACTION, event -> {
 
+            // Chặn trường hợp bấm Lưu / nhấn Enter nhiều lần liên tiếp gây tạo
+            // trùng giao dịch (double-submit) trước khi dialog kịp đóng lại.
+            if (okButton.isDisabled()) {
+                event.consume();
+                return;
+            }
+
             if (!ValidationUtil.isPositiveNumber(txtAmount.getText())) {
                 showWarning("Số tiền không hợp lệ, phải là số lớn hơn 0.");
                 event.consume();
@@ -193,6 +203,7 @@ public class DashboardController {
                             txtNote.getText(), cbCategory.getValue(), cbWallet.getValue());
                     manager.addTransaction(transaction);
                 }
+                okButton.setDisable(true); // lưu thành công -> khóa nút, chặn bấm thêm lần nữa
             } catch (IllegalArgumentException e) {
                 showWarning(e.getMessage());
                 event.consume();

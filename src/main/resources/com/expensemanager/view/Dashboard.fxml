@@ -74,6 +74,7 @@
     <center>
         <TableView fx:id="tblTransactions" styleClass="table-view">
             <columns>
+                <TableColumn fx:id="colId" text="ID" prefWidth="45"/>
                 <TableColumn fx:id="colDate" text="Ngày" prefWidth="100"/>
                 <TableColumn fx:id="colType" text="Loại" prefWidth="90"/>
                 <TableColumn fx:id="colCategory" text="Danh mục" prefWidth="140"/>
