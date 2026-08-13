@@ -159,8 +159,28 @@ public class DashboardController {
         TextField txtAmount = new TextField();
         DatePicker dpDate = new DatePicker(LocalDate.now());
 
-        ComboBox<Category> cbCategory = new ComboBox<>(
-                FXCollections.observableArrayList(manager.getCategories()));
+        // Danh mục hiển thị được lọc theo đúng loại (Thu nhập/Chi tiêu) đang chọn ở cbType,
+        // để không thể chọn nhầm danh mục Chi tiêu cho giao dịch Thu nhập (hoặc ngược lại).
+        ComboBox<Category> cbCategory = new ComboBox<>();
+
+        Runnable refreshCategoryOptions = () -> {
+            TransactionType selectedType = cbType.getValue();
+            Category previouslySelected = cbCategory.getValue();
+
+            List<Category> filtered = manager.getCategories().stream()
+                    .filter(c -> c.getType() == selectedType)
+                    .collect(java.util.stream.Collectors.toList());
+
+            cbCategory.setItems(FXCollections.observableArrayList(filtered));
+
+            if (filtered.contains(previouslySelected)) {
+                cbCategory.getSelectionModel().select(previouslySelected);
+            } else if (!filtered.isEmpty()) {
+                cbCategory.getSelectionModel().selectFirst();
+            }
+        };
+
+        cbType.valueProperty().addListener((obs, oldType, newType) -> refreshCategoryOptions.run());
 
         ComboBox<Wallet> cbWallet = new ComboBox<>(
                 FXCollections.observableArrayList(manager.getWallets()));
@@ -172,12 +192,13 @@ public class DashboardController {
             cbType.getSelectionModel().select(editing.getType());
             txtAmount.setText(String.valueOf((long) editing.getAmount()));
             dpDate.setValue(editing.getDate());
+            refreshCategoryOptions.run();
             cbCategory.getSelectionModel().select(editing.getCategory());
             cbWallet.getSelectionModel().select(editing.getWallet());
             txtNote.setText(editing.getNote());
         } else {
             cbType.getSelectionModel().selectFirst();
-            cbCategory.getSelectionModel().selectFirst();
+            refreshCategoryOptions.run();
             cbWallet.getSelectionModel().selectFirst();
         }
 
@@ -530,8 +551,9 @@ public class DashboardController {
     @FXML
     private void handleManageBudget() {
 
-        if (manager.getCategories().isEmpty()) {
-            showWarning("Cần có ít nhất 1 danh mục trước khi đặt ngân sách.");
+        if (manager.getCategories().stream().noneMatch(c -> c.getType() == TransactionType.EXPENSE)) {
+            showWarning("Cần có ít nhất 1 danh mục Chi tiêu trước khi đặt ngân sách " +
+                    "(ngân sách chỉ áp dụng cho danh mục Chi tiêu).");
             return;
         }
 
@@ -542,8 +564,14 @@ public class DashboardController {
         ButtonType setButtonType = new ButtonType("Đặt hạn mức", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(setButtonType, ButtonType.CLOSE);
 
+        // Chỉ hiện danh mục Chi tiêu - đặt ngân sách cho danh mục Thu nhập là vô nghĩa
+        // vì getSpentByCategory() chỉ tính tổng các giao dịch Chi tiêu.
+        List<Category> expenseCategories = manager.getCategories().stream()
+                .filter(c -> c.getType() == TransactionType.EXPENSE)
+                .collect(java.util.stream.Collectors.toList());
+
         ComboBox<Category> cbCategory = new ComboBox<>(
-                FXCollections.observableArrayList(manager.getCategories()));
+                FXCollections.observableArrayList(expenseCategories));
         cbCategory.getSelectionModel().selectFirst();
 
         TextField txtLimit = new TextField();

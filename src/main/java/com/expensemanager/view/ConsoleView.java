@@ -105,7 +105,7 @@ public class ConsoleView {
             double amount = readPositiveDouble("So tien: ");
             LocalDate date = readDate("Ngay (yyyy-MM-dd): ");
 
-            Category category = chooseCategory();
+            Category category = chooseCategory(type);
             if (category == null) return;
 
             Wallet wallet = chooseWallet();
@@ -150,7 +150,7 @@ public class ConsoleView {
             double amount = readPositiveDouble("So tien moi (hien tai " + transaction.getAmount() + "): ");
             LocalDate date = readDate("Ngay moi (yyyy-MM-dd): ");
 
-            Category category = chooseCategory();
+            Category category = chooseCategory(transaction.getType());
             if (category == null) return;
 
             Wallet wallet = chooseWallet();
@@ -370,7 +370,7 @@ public class ConsoleView {
 
         if (choice.equals("1")) {
 
-            Category category = chooseCategory();
+            Category category = chooseCategory(TransactionType.EXPENSE);
             if (category == null) return;
 
             double limit = readPositiveDouble("Han muc (VND/thang): ");
@@ -443,11 +443,33 @@ public class ConsoleView {
      * @return danh mục được chọn, hoặc null nếu không hợp lệ/chưa có danh mục nào
      */
     private Category chooseCategory() {
-        if (manager.getCategories().isEmpty()) {
-            System.out.println("Chua co danh muc nao.");
+        return chooseCategory(null);
+    }
+
+    /**
+     * Hiện danh sách danh mục để người dùng chọn theo số thứ tự, chỉ hiện các
+     * danh mục đúng loại filterType (nếu khác null) - tránh chọn nhầm danh mục
+     * Chi tiêu cho giao dịch Thu nhập hoặc ngược lại.
+     *
+     * @param filterType loại danh mục cần lọc, hoặc null để hiện tất cả
+     * @return danh mục được chọn, hoặc null nếu không hợp lệ/không có danh mục phù hợp
+     */
+    private Category chooseCategory(TransactionType filterType) {
+
+        List<Category> categories = manager.getCategories();
+
+        if (filterType != null) {
+            categories = categories.stream()
+                    .filter(c -> c.getType() == filterType)
+                    .collect(java.util.stream.Collectors.toList());
+        }
+
+        if (categories.isEmpty()) {
+            System.out.println("Chua co danh muc " +
+                    (filterType == null ? "nao" : "loai " + filterType) + ".");
             return null;
         }
-        List<Category> categories = manager.getCategories();
+
         for (int i = 0; i < categories.size(); i++) {
             System.out.println("[" + i + "] " + categories.get(i).getName()
                     + " (" + categories.get(i).getType() + ")");

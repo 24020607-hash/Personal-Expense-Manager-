@@ -32,6 +32,12 @@ public class Expense extends Transaction {
                    String paymentMethod) {
 
         super(id, amount, date, note, category, wallet);
+
+        if (category.getType() != TransactionType.EXPENSE) {
+            throw new IllegalArgumentException(
+                    "Danh mục \"" + category.getName() + "\" không phải danh mục Chi tiêu.");
+        }
+
         this.paymentMethod = paymentMethod;
     }
 

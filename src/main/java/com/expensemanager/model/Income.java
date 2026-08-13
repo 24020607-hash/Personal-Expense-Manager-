@@ -32,6 +32,12 @@ public class Income extends Transaction {
                   String source) {
 
         super(id, amount, date, note, category, wallet);
+
+        if (category.getType() != TransactionType.INCOME) {
+            throw new IllegalArgumentException(
+                    "Danh mục \"" + category.getName() + "\" không phải danh mục Thu nhập.");
+        }
+
         this.source = source;
     }
 
