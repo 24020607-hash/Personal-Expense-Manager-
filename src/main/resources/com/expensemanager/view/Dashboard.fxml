@@ -37,6 +37,10 @@
             <Label text="BÁO CÁO" styleClass="sidebar-section-label"/>
             <Button text="Thống kê chi tiêu" styleClass="sidebar-btn" onAction="#handleShowStatistics"/>
 
+            <Label text="LỊCH SỬ" styleClass="sidebar-section-label"/>
+            <Button text="↩ Hoàn tác gần nhất" styleClass="sidebar-btn" onAction="#handleUndo"/>
+            <Button text="↩↩ Hoàn tác tất cả" styleClass="sidebar-btn" onAction="#handleUndoAll"/>
+
             <Region VBox.vgrow="ALWAYS"/>
 
         </VBox>

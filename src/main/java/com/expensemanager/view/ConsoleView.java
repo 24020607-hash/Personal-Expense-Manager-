@@ -54,6 +54,8 @@ public class ConsoleView {
                 case "7": manageWallet(); break;
                 case "8": monthlySummary(); break;
                 case "9": setOrCheckBudget(); break;
+                case "10": undoLast(); break;
+                case "11": undoAll(); break;
                 default:
                     System.out.println("Action is not supported");
             }
@@ -76,6 +78,8 @@ public class ConsoleView {
         System.out.println("[7] Manage Wallet");
         System.out.println("[8] Monthly Summary");
         System.out.println("[9] Set / Check Budget");
+        System.out.println("[10] Undo (hoàn tác thao tác gần nhất)");
+        System.out.println("[11] Undo All (hoàn tác tất cả)");
         System.out.print("Choose an action: ");
     }
 
@@ -395,6 +399,41 @@ public class ConsoleView {
 
         } else {
             System.out.println("Action is not supported");
+        }
+    }
+
+    /**
+     * Xử lý lựa chọn [10] Undo.
+     */
+    private void undoLast() {
+
+        if (!manager.canUndo()) {
+            System.out.println("Khong co thao tac nao de hoan tac.");
+            return;
+        }
+
+        String description = manager.undoLast();
+        System.out.println("Da hoan tac: " + description);
+    }
+
+    /**
+     * Xử lý lựa chọn [11] Undo All.
+     */
+    private void undoAll() {
+
+        if (!manager.canUndo()) {
+            System.out.println("Khong co thao tac nao de hoan tac.");
+            return;
+        }
+
+        System.out.print("Hoan tac TAT CA thao tac trong phien lam viec nay? (y/n): ");
+        String confirm = scanner.nextLine().trim();
+
+        if (confirm.equalsIgnoreCase("y")) {
+            int count = manager.undoAll();
+            System.out.println("Da hoan tac " + count + " thao tac.");
+        } else {
+            System.out.println("Da huy.");
         }
     }
 

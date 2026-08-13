@@ -655,6 +655,48 @@ public class DashboardController {
         alert.showAndWait();
     }
 
+    /**
+     * Hoàn tác thao tác gần nhất (thêm/sửa/xóa giao dịch, ví, hoặc danh mục).
+     */
+    @FXML
+    private void handleUndo() {
+
+        if (!manager.canUndo()) {
+            showInfo("Không có thao tác nào để hoàn tác.");
+            return;
+        }
+
+        String description = manager.undoLast();
+        refreshTable(manager.getTransactions());
+        refreshSummary();
+        showInfo("Đã hoàn tác: " + description);
+    }
+
+    /**
+     * Hoàn tác toàn bộ lịch sử thao tác trong phiên làm việc hiện tại, sau khi
+     * người dùng xác nhận (đề phòng bấm nhầm mất công sức các thao tác gần đây).
+     */
+    @FXML
+    private void handleUndoAll() {
+
+        if (!manager.canUndo()) {
+            showInfo("Không có thao tác nào để hoàn tác.");
+            return;
+        }
+
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
+                "Hoàn tác TẤT CẢ thao tác trong phiên làm việc này? Không thể hoàn tác lại sau khi đã thực hiện.",
+                ButtonType.YES, ButtonType.NO);
+        Optional<ButtonType> result = confirm.showAndWait();
+
+        if (result.isPresent() && result.get() == ButtonType.YES) {
+            int count = manager.undoAll();
+            refreshTable(manager.getTransactions());
+            refreshSummary();
+            showInfo("Đã hoàn tác " + count + " thao tác.");
+        }
+    }
+
     // ================== TIỆN ÍCH ==================
 
     /**

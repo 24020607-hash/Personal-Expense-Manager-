@@ -1,5 +1,6 @@
 package com.expensemanager.service;
 
+import com.expensemanager.command.*;
 import com.expensemanager.enums.TransactionType;
 import com.expensemanager.model.*;
 import com.expensemanager.storage.Storage;
@@ -27,11 +28,20 @@ public class ExpenseManager {
 
     private Storage storage;
 
+    /**
+     * Lịch sử thao tác để hoàn tác (Command Pattern). Dùng Deque như một
+     * ngăn xếp (stack) - LIFO: luôn hoàn tác thao tác GẦN NHẤT trước, đảm bảo
+     * thứ tự hoàn tác không bao giờ phá vỡ tính toàn vẹn dữ liệu (VD: không
+     * thể hoàn tác "thêm ví" trước khi hoàn tác "thêm giao dịch" dùng ví đó).
+     */
+    private Deque<Command> undoStack;
+
     private ExpenseManager() {
         transactions = new ArrayList<>();
         wallets = new ArrayList<>();
         categories = new ArrayList<>();
         budgets = new HashMap<>();
+        undoStack = new ArrayDeque<>();
     }
 
     /**
@@ -65,6 +75,7 @@ public class ExpenseManager {
         }
 
         wallets.add(wallet);
+        undoStack.push(new AddWalletCommand(wallet, this));
     }
 
     /**
@@ -88,7 +99,12 @@ public class ExpenseManager {
             throw new IllegalStateException("Không thể xóa ví đang có giao dịch liên quan.");
         }
 
-        return wallets.remove(wallet);
+        if (wallets.remove(wallet)) {
+            undoStack.push(new RemoveWalletCommand(wallet, this));
+            return true;
+        }
+
+        return false;
     }
 
     public List<Wallet> getWallets() {
@@ -127,6 +143,7 @@ public class ExpenseManager {
         }
 
         categories.add(category);
+        undoStack.push(new AddCategoryCommand(category, this));
     }
 
     /**
@@ -151,7 +168,13 @@ public class ExpenseManager {
         }
 
         budgets.remove(category);
-        return categories.remove(category);
+
+        if (categories.remove(category)) {
+            undoStack.push(new RemoveCategoryCommand(category, this));
+            return true;
+        }
+
+        return false;
     }
 
     public List<Category> getCategories() {
@@ -188,6 +211,7 @@ public class ExpenseManager {
     public void addTransaction(Transaction transaction) {
         applyToWallet(transaction, +1);
         transactions.add(transaction);
+        undoStack.push(new AddTransactionCommand(transaction, this));
     }
 
     /**
@@ -207,6 +231,7 @@ public class ExpenseManager {
         // Hoàn tác ảnh hưởng lên ví trước khi xóa (ngược lại lúc thêm)
         applyToWallet(transaction, -1);
         transactions.remove(transaction);
+        undoStack.push(new RemoveTransactionCommand(transaction, this));
         return true;
     }
 
@@ -253,6 +278,9 @@ public class ExpenseManager {
             transaction.setWallet(newWallet);
             applyToWallet(transaction, +1); // áp dụng ảnh hưởng mới
 
+            undoStack.push(new UpdateTransactionCommand(
+                    transaction, oldAmount, oldDate, oldNote, oldCategory, oldWallet, this));
+
         } catch (RuntimeException e) {
 
             // Rollback về trạng thái cũ nếu cập nhật thất bại
@@ -264,6 +292,18 @@ public class ExpenseManager {
             applyToWallet(transaction, +1);
             throw e;
         }
+    }
+
+    /**
+     * Áp dụng hoặc gỡ ảnh hưởng của một giao dịch lên số dư ví, KHÔNG ghi vào
+     * lịch sử hoàn tác. Chỉ dùng nội bộ bởi các lớp Command khi hoàn tác thao
+     * tác - nếu ghi vào lịch sử sẽ gây vòng lặp (hoàn tác lại tạo thêm lịch sử).
+     *
+     * @param transaction giao dịch cần xử lý
+     * @param apply       true để áp dụng ảnh hưởng, false để gỡ bỏ ảnh hưởng
+     */
+    public void applyWalletEffect(Transaction transaction, boolean apply) {
+        applyToWallet(transaction, apply ? 1 : -1);
     }
 
     /**
@@ -485,6 +525,66 @@ public class ExpenseManager {
         }
 
         return budget.isExceeded(getSpentByCategory(category, month));
+    }
+
+    // ================== UNDO (Command Pattern) ==================
+
+    /**
+     * @return true nếu còn thao tác nào đó có thể hoàn tác
+     */
+    public boolean canUndo() {
+        return !undoStack.isEmpty();
+    }
+
+    /**
+     * Hoàn tác thao tác gần nhất (LIFO - luôn hoàn tác cái mới nhất trước).
+     *
+     * @return mô tả thao tác vừa được hoàn tác
+     * @throws IllegalStateException nếu không còn thao tác nào để hoàn tác
+     */
+    public String undoLast() {
+
+        if (undoStack.isEmpty()) {
+            throw new IllegalStateException("Không có thao tác nào để hoàn tác.");
+        }
+
+        Command command = undoStack.pop();
+        command.undo();
+        return command.getDescription();
+    }
+
+    /**
+     * Hoàn tác TOÀN BỘ lịch sử thao tác trong phiên làm việc hiện tại, đưa dữ
+     * liệu về đúng trạng thái lúc mới mở ứng dụng (hoặc lúc undoStack rỗng gần
+     * nhất). Thứ tự hoàn tác luôn từ mới nhất về cũ nhất (LIFO) nên không bao
+     * giờ phá vỡ tính toàn vẹn dữ liệu.
+     *
+     * @return số lượng thao tác đã được hoàn tác
+     */
+    public int undoAll() {
+
+        int count = 0;
+
+        while (!undoStack.isEmpty()) {
+            undoStack.pop().undo();
+            count++;
+        }
+
+        return count;
+    }
+
+    /**
+     * @return danh sách mô tả các thao tác có thể hoàn tác, thao tác gần nhất đứng đầu
+     */
+    public List<String> getUndoHistory() {
+
+        List<String> history = new ArrayList<>();
+
+        for (Command command : undoStack) {
+            history.add(command.getDescription());
+        }
+
+        return history;
     }
 
     // ================== STORAGE ==================

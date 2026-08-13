@@ -20,6 +20,8 @@ Xây dựng bằng Java (JavaFX + Maven), hỗ trợ cả giao diện đồ họ
 - **Singleton**: `ExpenseManager` — đảm bảo toàn ứng dụng (cả GUI lẫn Console) dùng chung
   một bộ dữ liệu duy nhất.
 - **Factory Method**: `TransactionFactory`, `WalletFactory` — tập trung logic khởi tạo đối tượng.
+- **Command Pattern**: `command/` — mỗi thao tác thêm/sửa/xóa (giao dịch, ví, danh mục) được ghi lại
+  thành một Command có thể `undo()`, cho phép hoàn tác từng bước hoặc hoàn tác toàn bộ phiên làm việc.
 - **Đóng gói**: mọi thuộc tính private, validate qua setter (không cho số tiền/số dư âm).
 
 ## Cấu trúc thư mục
@@ -89,6 +91,14 @@ mvn test
 
 **Ngân sách (Budget)**
 - [x] Đặt hạn mức theo danh mục/tháng, cảnh báo khi vượt hạn mức
+
+**Hoàn tác (Undo)**
+- [x] Hoàn tác từng bước (thêm/sửa/xóa giao dịch, ví, danh mục) — nút "Hoàn tác gần nhất" (GUI)
+      hoặc mục [10] trên Console
+- [x] Hoàn tác toàn bộ lịch sử phiên làm việc — nút "Hoàn tác tất cả" (GUI) hoặc mục [11] trên Console
+- [x] Lưu ý: "Hoàn tác tất cả" đưa dữ liệu về đúng lúc mới mở ứng dụng (kể cả ví/danh mục), không
+      chỉ hoàn tác riêng các lệnh xóa gần nhất — nếu chỉ muốn khôi phục vài giao dịch vừa lỡ xóa,
+      nên dùng "Hoàn tác gần nhất" lặp lại đúng số lần
 
 **Lưu trữ**
 - [x] Đọc/ghi CSV và JSON (2 cài đặt của cùng interface `Storage`)
